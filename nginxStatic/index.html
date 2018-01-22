@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="messagesApp">
+<head>
+    <meta charset="UTF-8">
+    <title>FarmPrototype</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script>
+        angular.module('messagesApp', [])
+            .controller('MessagesController', function ($http) {
+                var app = this;
+                app.messages = [];
+                $http.get("http://localhost:4567/messages")
+                    .then(function (response) {
+                        app.messages = response.data;
+                    }, function (error) {
+                        console.error(error.data);
+                    });
+            });
+    </script>
+    <style>
+        .chosen {
+            box-shadow: 0 0 20px 60px rgba(0, 0, 0, 0.3) inset;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="MessagesController as app"
+     class="app">
+
+    <div>Messages: </div>
+
+    <div ng-repeat="message in app.messages">
+        <div>{{message}}</div>
+    </div>
+
+</div>
+</body>
+</html>

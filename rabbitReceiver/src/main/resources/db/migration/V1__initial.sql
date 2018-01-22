@@ -1,0 +1,6 @@
+CREATE TABLE messages
+(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  message VARCHAR(500) NOT NULL,
+  received DATETIME NOT NULL
+);
