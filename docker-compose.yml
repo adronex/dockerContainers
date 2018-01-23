@@ -1,0 +1,43 @@
+version: '3.3'
+services:
+  broker_rabbitmq:
+    container_name: broker_rabbitmq
+    image: rabbitmq
+    ports:
+      - $RABBIT_PORT:5672
+    hostname: rabbit_data_host
+  db_mysql:
+    container_name: db_mysql
+    image: mysql:5.7.18
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_HOST: localhost
+  rabbit_sender:
+    container_name: rabbit_sender
+    image: adronex/rabbit_sender
+    environment:
+      RABBIT_HOST: broker_rabbitmq
+      RABBIT_PORT: $RABBIT_PORT
+  rabbit_receiver:
+    container_name: rabbit_receiver
+    image: adronex/rabbit_receiver
+    ports:
+      - $SPARK_PORT:4567
+    environment:
+      RABBIT_HOST: broker_rabbitmq
+      RABBIT_PORT: $RABBIT_PORT
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_HOST: db_mysql # should be equal to database container name
+      MYSQL_PORT: 3306
+      SPARK_PORT: $SPARK_PORT
+  nginx_static:
+    container_name: nginx_static
+    image: adronex/nginx_static
+    ports:
+      - $NGINX_PORT:80
