@@ -17,12 +17,16 @@ services:
       MYSQL_HOST: localhost
   rabbit_sender:
     container_name: rabbit_sender
+    build: ./rabbitSender
     image: adronex/rabbit_sender
     environment:
       RABBIT_HOST: broker_rabbitmq
       RABBIT_PORT: $RABBIT_PORT
+    depends_on:
+      - broker_rabbitmq
   rabbit_receiver:
     container_name: rabbit_receiver
+    build: ./rabbitReceiver
     image: adronex/rabbit_receiver
     ports:
       - $SPARK_PORT:4567
@@ -36,8 +40,12 @@ services:
       MYSQL_HOST: db_mysql # should be equal to database container name
       MYSQL_PORT: 3306
       SPARK_PORT: $SPARK_PORT
+    depends_on:
+      - db_mysql
+      - broker_rabbitmq
   nginx_static:
     container_name: nginx_static
+    build: ./nginxStatic
     image: adronex/nginx_static
     ports:
       - $NGINX_PORT:80
