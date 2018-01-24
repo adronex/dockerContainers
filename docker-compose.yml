@@ -49,3 +49,10 @@ services:
     image: adronex/nginx_static
     ports:
       - $NGINX_PORT:80
+  monitoring:
+    container_name: monitoring
+    image: portainer/portainer
+    ports:
+      - $MONITORING_PORT:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
